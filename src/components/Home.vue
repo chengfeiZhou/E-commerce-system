@@ -6,7 +6,7 @@
         <img src="../assets/logo.png" alt="">
         <span>电商后台管理系统</span>
       </div>
-      <el-button type="info">退出</el-button>
+      <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <!-- 页面主题 -->
     <el-container>
@@ -158,6 +158,10 @@ export default {
       }
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menulist = res.data
+    },
+    logout () {
+      window.sessionStorage.clear()
+      this.$router.push('/login')
     }
   }
 }
