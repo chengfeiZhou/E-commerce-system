@@ -6,7 +6,7 @@
         <img src="../assets/logo.png" alt="">
         <span>电商后台管理系统</span>
       </div>
-      <el-button type="info">退出</el-button>
+      <el-button type="info" @click="logout">退出</el-button>
     </el-header>
     <!-- 页面主题 -->
     <el-container>
@@ -17,7 +17,7 @@
           background-color="#333744"
           text-color="#fff"
           active-text-color="#ffd04b">
-          <el-submenu :index="item.id" :key="item.id" v-for="item in menulist" >
+          <el-submenu :index="item.id+''" :key="item.id" v-for="item in menulist" >
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>{{ item.authname }}</span>
@@ -52,107 +52,116 @@ export default {
     async getMenuList () {
       //  后台数据
       // const { data: res } = await this.$http.get('menus')
-      // if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-      // this.menulist = res.data
-      // fake数据
-      this.menulist = [
-        {
-          id: 0,
-          authname: '用户管理',
-          order: 1,
-          path: 'users',
-          children: [
-            {
-              id: 0,
-              authname: '用户列表',
-              order: 1,
-              path: 'users',
-              children: []
-            }
-          ]
-        },
-        {
-          id: 1,
-          authname: '权限管理',
-          order: 2,
-          path: 'rights',
-          children: [
-            {
-              id: 0,
-              authname: '角色列表',
-              order: 1,
-              path: 'users',
-              children: []
-            },
-            {
-              id: 0,
-              authname: '权限列表',
-              order: 1,
-              path: 'users',
-              children: []
-            }
-          ]
-        },
-        {
-          id: 2,
-          authname: '商品管理',
-          order: 3,
-          path: 'goods',
-          children: [
-            {
-              id: 0,
-              authname: '商品列表',
-              order: 1,
-              path: 'users',
-              children: []
-            },
-            {
-              id: 0,
-              authname: '分类参数',
-              order: 1,
-              path: 'users',
-              children: []
-            },
-            {
-              id: 0,
-              authname: '商品分类',
-              order: 1,
-              path: 'users',
-              children: []
-            }
-          ]
-        },
-        {
-          id: 3,
-          authname: '订单管理',
-          order: 4,
-          path: 'orders',
-          children: [
-            {
-              id: 0,
-              authname: '用户管理',
-              order: 1,
-              path: 'users',
-              children: []
-            }
-          ]
-        },
-        {
-          id: 4,
-          authname: '数据统计',
-          order: 5,
-          path: 'reports',
-          children: [
-            {
-              id: 0,
-              authname: '用户管理',
-              order: 1,
-              path: 'users',
-              children: []
-            }
-          ]
+      const res = {
+        data: [
+          {
+            id: 0,
+            authname: '用户管理',
+            order: 1,
+            path: 'users',
+            children: [
+              {
+                id: 0,
+                authname: '用户列表',
+                order: 1,
+                path: 'users',
+                children: []
+              }
+            ]
+          },
+          {
+            id: 1,
+            authname: '权限管理',
+            order: 2,
+            path: 'rights',
+            children: [
+              {
+                id: 0,
+                authname: '角色列表',
+                order: 1,
+                path: 'users',
+                children: []
+              },
+              {
+                id: 1,
+                authname: '权限列表',
+                order: 2,
+                path: 'users',
+                children: []
+              }
+            ]
+          },
+          {
+            id: 2,
+            authname: '商品管理',
+            order: 3,
+            path: 'goods',
+            children: [
+              {
+                id: 0,
+                authname: '商品列表',
+                order: 1,
+                path: 'users',
+                children: []
+              },
+              {
+                id: 1,
+                authname: '分类参数',
+                order: 2,
+                path: 'users',
+                children: []
+              },
+              {
+                id: 2,
+                authname: '商品分类',
+                order: 3,
+                path: 'users',
+                children: []
+              }
+            ]
+          },
+          {
+            id: 3,
+            authname: '订单管理',
+            order: 4,
+            path: 'orders',
+            children: [
+              {
+                id: 1,
+                authname: '用户管理',
+                order: 1,
+                path: 'users',
+                children: []
+              }
+            ]
+          },
+          {
+            id: 4,
+            authname: '数据统计',
+            order: 5,
+            path: 'reports',
+            children: [
+              {
+                id: 0,
+                authname: '用户管理',
+                order: 1,
+                path: 'users',
+                children: []
+              }
+            ]
+          }
+        ],
+        meta: {
+          msg: '获取菜单列表成功',
+          status: 200
         }
-      ]
+      }
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.menulist = res.data
+    },
+    logout () {
+      window.sessionStorage.clear()
+      this.$router.push('/login')
     }
   }
 }
