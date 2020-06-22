@@ -20,13 +20,19 @@
           active-text-color="#409eff"
           :unique-opened="true"
           :collapse="isCollapse"
-          :collapse-transition="false">
+          :collapse-transition="false"
+          :router="true"
+          :default-active="activePath">
           <el-submenu :index="item.id+''" :key="item.id" v-for="item in menulist" >
             <template slot="title">
               <i :class="iconsObj[item.path]"></i>
               <span>{{ item.authname }}</span>
             </template>
-            <el-menu-item index="item.id+'-'+subItem.id" :key="subItem.id" v-for="subItem in item.children">
+            <el-menu-item
+              :index="'/' + subItem.path"
+              :key="subItem.id"
+              v-for="subItem in item.children"
+              @click="saveNavState('/' + subItem.path)">
               <template slot="title">
                 <i class="el-icon-menu"></i>
                 <span>{{ subItem.authname }}</span>
@@ -36,7 +42,9 @@
         </el-menu>
       </el-aside>
       <!-- 右侧主题 -->
-      <el-main>Main</el-main>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
     </el-container>
     </el-container>
 </template>
@@ -54,10 +62,12 @@ export default {
         reports: 'iconfont icon-baobiao'
       },
       isCollapse: false,
+      activePath: ''
     }
   },
   created () {
     this.getMenuList()
+    this.activePath = window.sessionStorage.getItem('activePath')
   },
   methods: {
     // 获取所有菜单
@@ -91,14 +101,14 @@ export default {
                 id: 0,
                 authname: '角色列表',
                 order: 1,
-                path: 'users',
+                path: 'roles',
                 children: []
               },
               {
                 id: 1,
                 authname: '权限列表',
                 order: 2,
-                path: 'users',
+                path: 'rights',
                 children: []
               }
             ]
@@ -113,21 +123,21 @@ export default {
                 id: 0,
                 authname: '商品列表',
                 order: 1,
-                path: 'users',
+                path: 'goods',
                 children: []
               },
               {
                 id: 1,
                 authname: '分类参数',
                 order: 2,
-                path: 'users',
+                path: 'goods',
                 children: []
               },
               {
                 id: 2,
                 authname: '商品分类',
                 order: 3,
-                path: 'users',
+                path: 'goods',
                 children: []
               }
             ]
@@ -142,7 +152,7 @@ export default {
                 id: 1,
                 authname: '用户管理',
                 order: 1,
-                path: 'users',
+                path: 'orders',
                 children: []
               }
             ]
@@ -157,7 +167,7 @@ export default {
                 id: 0,
                 authname: '用户管理',
                 order: 1,
-                path: 'users',
+                path: 'reports',
                 children: []
               }
             ]
@@ -178,6 +188,11 @@ export default {
     toggleCollapse () {
       // 点击按钮显示隐藏菜单
       this.isCollapse = !this.isCollapse
+    },
+    saveNavState (path) {
+      // 保存url
+      this.activePath = path
+      window.sessionStorage.setItem('activePath', path)
     }
   }
 }
