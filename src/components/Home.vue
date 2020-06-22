@@ -11,20 +11,24 @@
     <!-- 页面主题 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside width="200px">
+      <el-aside :width="isCollapse ? '64px' : '200px'">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边栏 -->
         <el-menu
           background-color="#333744"
           text-color="#fff"
-          active-text-color="#ffd04b">
+          active-text-color="#409eff"
+          :unique-opened="true"
+          :collapse="isCollapse"
+          :collapse-transition="false">
           <el-submenu :index="item.id+''" :key="item.id" v-for="item in menulist" >
             <template slot="title">
-              <i class="el-icon-location"></i>
+              <i :class="iconsObj[item.path]"></i>
               <span>{{ item.authname }}</span>
             </template>
             <el-menu-item index="item.id+'-'+subItem.id" :key="subItem.id" v-for="subItem in item.children">
               <template slot="title">
-                <i class="el-icon-location"></i>
+                <i class="el-icon-menu"></i>
                 <span>{{ subItem.authname }}</span>
               </template>
             </el-menu-item>
@@ -41,7 +45,15 @@
 export default {
   data () {
     return {
-      menulist: []
+      menulist: [],
+      iconsObj: {
+        users: 'iconfont icon-user',
+        rights: 'iconfont icon-tijikongjian',
+        goods: 'iconfont icon-shangpin',
+        orders: 'iconfont icon-danju',
+        reports: 'iconfont icon-baobiao'
+      },
+      isCollapse: false,
     }
   },
   created () {
@@ -162,6 +174,10 @@ export default {
     logout () {
       window.sessionStorage.clear()
       this.$router.push('/login')
+    },
+    toggleCollapse () {
+      // 点击按钮显示隐藏菜单
+      this.isCollapse = !this.isCollapse
     }
   }
 }
@@ -194,9 +210,24 @@ export default {
   }
   .el-aside {
     background-color: #333744;
+    .el-menu {
+      border-right: 0;
+    }
   }
   .el-main {
     background-color: #eaedf1;
+  }
+  .iconfont {
+    margin-right: 10px;
+  }
+  .toggle-button {
+    background-color: #4a5064;
+    font-size: 10px;
+    line-height: 24px;
+    color: #fff;
+    text-align: center;
+    letter-spacing: .1em;
+    cursor: pointer;
   }
 }
 </style>
