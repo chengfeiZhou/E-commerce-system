@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { logoinSuccess } from './serverData'
+
 export default {
   data () {
     return {
@@ -58,20 +60,7 @@ export default {
         if (valid) {
           // 发起请求, 没有做密码的加密
           // const { data: res } = await this.$http.post('login', this.form)
-          const res = {
-            data: {
-              id: 500,
-              rid: 0,
-              username: 'admin',
-              mobile: '123',
-              email: '123@qq.com',
-              token: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjUwMCwicmlkIjowLCJpYXQiOjE1MTI1NDQyOTksImV4cCI6MTUxMjYzMDY5OX0.eGrsrvwHm-tPsO9r_pxHIQ5i5L1kX9RX444uwnRGaIM'
-            },
-            meta: {
-              msg: '登录成功',
-              status: 200
-            }
-          }
+          const res = logoinSuccess
           if (res.meta.status !== 200) return this.$message.error('登录失败...')
           // this.$message.success('登录成功...')
           // 1. 将登录成功之后的token 保存到浏览器的sessionStorage中

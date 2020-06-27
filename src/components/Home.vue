@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import { menuList } from './serverData'
 export default {
   data () {
     return {
@@ -74,110 +75,8 @@ export default {
     async getMenuList () {
       //  后台数据
       // const { data: res } = await this.$http.get('menus')
-      const res = {
-        data: [
-          {
-            id: 0,
-            authname: '用户管理',
-            order: 1,
-            path: 'users',
-            children: [
-              {
-                id: 0,
-                authname: '用户列表',
-                order: 1,
-                path: 'users',
-                children: []
-              }
-            ]
-          },
-          {
-            id: 1,
-            authname: '权限管理',
-            order: 2,
-            path: 'rights',
-            children: [
-              {
-                id: 0,
-                authname: '角色列表',
-                order: 1,
-                path: 'roles',
-                children: []
-              },
-              {
-                id: 1,
-                authname: '权限列表',
-                order: 2,
-                path: 'rights',
-                children: []
-              }
-            ]
-          },
-          {
-            id: 2,
-            authname: '商品管理',
-            order: 3,
-            path: 'goods',
-            children: [
-              {
-                id: 0,
-                authname: '商品列表',
-                order: 1,
-                path: 'goods',
-                children: []
-              },
-              {
-                id: 1,
-                authname: '分类参数',
-                order: 2,
-                path: 'goods',
-                children: []
-              },
-              {
-                id: 2,
-                authname: '商品分类',
-                order: 3,
-                path: 'goods',
-                children: []
-              }
-            ]
-          },
-          {
-            id: 3,
-            authname: '订单管理',
-            order: 4,
-            path: 'orders',
-            children: [
-              {
-                id: 1,
-                authname: '用户管理',
-                order: 1,
-                path: 'orders',
-                children: []
-              }
-            ]
-          },
-          {
-            id: 4,
-            authname: '数据统计',
-            order: 5,
-            path: 'reports',
-            children: [
-              {
-                id: 0,
-                authname: '用户管理',
-                order: 1,
-                path: 'reports',
-                children: []
-              }
-            ]
-          }
-        ],
-        meta: {
-          msg: '获取菜单列表成功',
-          status: 200
-        }
-      }
+      console.log(menuList)
+      const res = menuList
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menulist = res.data
     },

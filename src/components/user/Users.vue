@@ -10,8 +10,8 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" @clear="getUserList" clearable>
+          <el-button slot="append" icon="el-icon-search" @click="getUserList"></el-button>
         </el-input>
         </el-col>
         <el-col :span="4">
@@ -31,7 +31,7 @@
         <el-table-column label="状态">
           <!-- 作用域插槽 -->
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.mg_state"></el-switch>
+            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
@@ -48,18 +48,30 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <!-- 分页 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[5, 10, 20, 50]"
+        :page-size="queryInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </el-card>
   </div>
 </template>
 
 <script>
+import { userList } from '../serverData'
 export default {
   data () {
     return {
       queryInfo: {
         query: '',
         pagenum: 1,
-        pagesize: 20
+        pagesize: 5
       },
       userList: [],
       total: 0
@@ -70,43 +82,31 @@ export default {
   },
   methods: {
     async getUserList () {
+      // 请求获取用户列表
       // const {data: res} = await this.$http.get('users', { parms: this.queryInfo })
-      const res = {
-        data: {
-          totalpage: 5,
-          pagenum: 4,
-          total: 20,
-          users: [
-            {
-              id: 25,
-              username: 'tige117',
-              mobile: '18616358651',
-              type: 1,
-              email: 'tige112@163.com',
-              create_time: '2017-11-09T20:36:26.000Z',
-              mg_state: true, // 当前用户的状态
-              role_name: '炒鸡管理员'
-            },
-            {
-              id: 26,
-              username: '的深层次的',
-              mobile: '18616358651',
-              type: 1,
-              email: 'tige112@163.com',
-              create_time: '2017-11-09T20:36:26.000Z',
-              mg_state: false, // 当前用户的状态
-              role_name: '管理员'
-            }
-          ]
-        },
-        meta: {
-          msg: '获取成功',
-          status: 200
-        }
-      }
+      const res = userList
       if (res.meta.status !== 200) return this.$message.error('获取用户失败')
       this.userList = res.data.users
+      this.queryInfo.pagenum = res.data.pagenum
       this.total = res.data.total
+    },
+    handleSizeChange (newSize) {
+      this.queryInfo.pagesize = newSize
+      this.getUserList()
+    },
+    handleCurrentChange (newPage) {
+      // 监听页码值
+      this.queryInfo.pagenum = newPage
+      this.getUserList()
+    },
+    async userStateChanged (event) {
+      // 监听switch
+      const { data: res } = await this.$http.put(`users/${event.id}/state/${event.mg_state}`)
+      if (res.meta.status !== 200) {
+        event.mg_state = !event.mg_state
+        return this.$message.error('更新用户状态失败...')
+      }
+      this.$message.success('更新成功...')
     }
   }
 }
