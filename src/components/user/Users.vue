@@ -35,9 +35,9 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="180px">
-          <template>
+          <template slot-scope="scope">
             <el-tooltip effect="dark" content="编辑用户" placement="top" :enterable="false">
-              <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+              <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)"></el-button>
             </el-tooltip>
             <el-tooltip effect="dark" content="删除用户" placement="top" :enterable="false">
               <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
@@ -93,6 +93,33 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogClose">取 消</el-button>
         <el-button type="primary" @click="addUser" :loading="isAddLoading">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 修改用户 -->
+    <el-dialog
+      title="修改用户"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClose">
+      <el-form
+        label-width="80px"
+        :model="editForm"
+        :rules="editFormRules"
+        ref="editFormRef">
+        <el-form-item label="用户名">
+          <el-input v-model="editForm.username" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogClose">取 消</el-button>
+        <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -160,6 +187,18 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: validateMobile, trigger: 'blur' }
         ]
+      },
+      editDialogVisible: false,
+      editForm: {},
+      editFormRules: {
+        email: [
+          { required: true, message: '请输入邮箱地址', trigger: 'blur' },
+          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: validateMobile, trigger: 'blur' }
+        ]
       }
     }
   },
@@ -212,6 +251,29 @@ export default {
         this.addDialogVisible = false
         this.addDialogClose()
         this.getUserList()
+      })
+    },
+    async showEditDialog (userInfo) {
+      // // 方式一: 根据id查询用户信息
+      // const { data: res } = await this.$$http.get(`users/${userInfo.id}`)
+      // if (res.meta.status !== 200) return this.$message.error('用户获取失败!')
+      // this.editForm = res.data
+      // 方式二: 直接填充用户信息
+      this.editForm = userInfo
+      this.editDialogVisible = true
+    },
+    editDialogClose () {
+      this.editDialogVisible = false
+      this.$refs.editFormRef.resetFields()
+    },
+    editUserInfo () {
+      this.$refs.editFormRef.validate(async valid => {
+        if (!valid) return this.$message.error('修改信息不合法!!')
+        const { data: res } = await this.$http.put(`users/${this.editForm.id}`, { email: this.editForm.email, mobile: this.editForm.mobile })
+        if (res.meta.status !== 200) return this.$message.error('更新失败')
+        this.editDialogClose()
+        this.userList()
+        this.$message.success('更新成功...')
       })
     }
   }
