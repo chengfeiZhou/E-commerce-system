@@ -23,16 +23,16 @@ const menuList = {
       children: [
         {
           id: 0,
-          authname: '角色列表',
+          authname: '权限列表',
           order: 1,
-          path: 'roles',
+          path: 'rights',
           children: []
         },
         {
           id: 1,
-          authname: '权限列表',
+          authname: '角色列表',
           order: 2,
-          path: 'rights',
+          path: 'roles',
           children: []
         }
       ]
@@ -152,4 +152,27 @@ const userList = {
   }
 }
 
-export { menuList, logoinSuccess, userList }
+const rightList = {
+  data: [
+    {
+      id: 101,
+      authName: '商品管理',
+      level: '0',
+      pid: 0,
+      path: '/goods'
+    },
+    {
+      id: 102,
+      authName: '订单管理',
+      level: '0',
+      pid: 0,
+      path: '/orders'
+    }
+  ],
+  meta: {
+    msg: '获取权限列表成功',
+    status: 200
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList }
