@@ -65,7 +65,8 @@
     <el-dialog
       title="添加用户"
       :visible.sync="addDialogVisible"
-      width="50%">
+      width="50%"
+      @close="addDialogClose">
       <!-- 内容主题区 -->
       <el-form
         label-width="80px"
@@ -90,8 +91,8 @@
       </el-form>
       <!-- 底部区域 -->
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        <el-button @click="addDialogClose">取 消</el-button>
+        <el-button type="primary" @click="addUser" :loading="isAddLoading">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -110,6 +111,16 @@ export default {
         callback()
       }
     }
+    var validateMobile = (rule, value, callback) => {
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}/
+      if (value === '') {
+        callback(new Error('请输入手机号!'))
+      } if (regMobile.test(value)) {
+        callback()
+      } else {
+        callback(new Error('请确认手机号'))
+      }
+    }
     return {
       queryInfo: {
         query: '',
@@ -119,6 +130,7 @@ export default {
       userList: [],
       total: 0,
       addDialogVisible: false,
+      isAddLoading: false,
       addForm: {
         username: '',
         password: '',
@@ -146,7 +158,7 @@ export default {
         ],
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
-          { min: 11, max: 11, message: '请输入正确的手机号', trigger: 'blur' }
+          { validator: validateMobile, trigger: 'blur' }
         ]
       }
     }
@@ -181,6 +193,26 @@ export default {
         return this.$message.error('更新用户状态失败...')
       }
       this.$message.success('更新成功...')
+    },
+    addDialogClose () {
+      this.addDialogVisible = false
+      this.$refs.addFormRef.resetFields()
+    },
+    addUser () {
+      // 添加新用户
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return this.$message.error('表单校验失败')
+        this.isAddLoading = true
+        const { data: res } = await this.$http.post('users', this.addForm)
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加用户失败!')
+        }
+        this.$message.success('添加用户成功')
+        this.isAddLoading = false
+        this.addDialogVisible = false
+        this.addDialogClose()
+        this.getUserList()
+      })
     }
   }
 }
