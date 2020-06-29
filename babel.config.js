@@ -15,6 +15,8 @@ module.exports = {
       }
     ],
     // 发布产品时的插件数组
-    ...prodPlugins
+    ...prodPlugins,
+    //配置路由懒加载插件
+    "@babel/plugin-syntax-dynamic-import"
   ]
 }

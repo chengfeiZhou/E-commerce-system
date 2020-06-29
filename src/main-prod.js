@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import './plugins/element.js'
+// import './plugins/element.js'
 import axios from 'axios'
 
 // 导入全局样式表
@@ -11,7 +11,7 @@ import './assets/fonts/iconfont.css'
 
 // 导入进度条包
 import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+// import 'nprogress/nprogress.css'
 
 // 设置axios请求拦截器
 axios.defaults.base = 'http://127.0.0.1:8888/api'
