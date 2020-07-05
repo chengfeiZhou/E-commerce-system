@@ -210,11 +210,6 @@ const roleListData = {
               path: null,
               children: [
                 {
-                  id: 108,
-                  authName: '添加商品',
-                  path: null
-                },
-                {
                   id: 109,
                   authName: '删除商品',
                   path: null
@@ -232,4 +227,56 @@ const roleListData = {
   }
 }
 
-export { menuList, logoinSuccess, userList, rightList, roleListData }
+const rightsTree = {
+  data: [
+    {
+      id: 101,
+      authName: '商品管理',
+      path: null,
+      pid: 0,
+      children: [
+        {
+          id: 104,
+          authName: '商品列表',
+          path: null,
+          pid: 101,
+          children: [
+            {
+              id: 105,
+              authName: '添加商品',
+              path: null
+            },
+            {
+              id: 106,
+              authName: '删除商品',
+              path: null
+            }
+          ]
+        },
+        {
+          id: 107,
+          authName: '商品列表',
+          path: null,
+          children: [
+            {
+              id: 108,
+              authName: '添加商品',
+              path: null
+            },
+            {
+              id: 109,
+              authName: '删除商品',
+              path: null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree }
