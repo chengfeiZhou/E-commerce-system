@@ -21,7 +21,8 @@
             <el-row v-for="(item1) in scope.row.children" :key="item1.id" class="topRow">
               <el-col :span="5">
                 <el-tag
-                  closable>
+                  closable
+                  @close="removeRightById(item1, scope.row)">
                   {{item1.authName}}
                 </el-tag>
                 <i class="el-icon-caret-right"></i>
@@ -31,7 +32,8 @@
                   <el-col :span="6">
                     <el-tag
                       closable
-                      type="success">
+                      type="success"
+                      @close="removeRightById(item2, scope.row)">
                       {{item2.authName}}
                     </el-tag>
                     <i class="el-icon-caret-right"></i>
@@ -39,6 +41,7 @@
                   <el-col :span="18">
                     <el-tag
                       closable
+                      @close="removeRightById(item3, scope.row)"
                       type="warning"
                       v-for="(item3) in item2.children" :key="item3.id">
                       {{item3.authName}}
@@ -88,6 +91,25 @@ export default {
       if (res.meta.status !== 200) return this.$message.error('角色列表获取失败...')
       this.rolesList = res.data
       console.log(this.rolesList)
+    },
+    async removeRightById (right, role) {
+      console.log(right, role)
+      // 弹框确认
+      const confirmResult = await this.$confirm('是否确认删除该用户的该权限?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch(err => err)
+
+      if (confirmResult !== 'confirm') return this.$message.info('已取消删除')
+      // 请求接口
+      const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${right.id}`)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除失败...')
+      }
+      // 返回值中包含新的所有权限
+      this.rolesList = res.data
+      return this.$message.success('删除成功...')
     }
   }
 }
