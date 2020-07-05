@@ -23,16 +23,16 @@ const menuList = {
       children: [
         {
           id: 0,
-          authname: '角色列表',
+          authname: '权限列表',
           order: 1,
-          path: 'roles',
+          path: 'rights',
           children: []
         },
         {
           id: 1,
-          authname: '权限列表',
+          authname: '角色列表',
           order: 2,
-          path: 'rights',
+          path: 'roles',
           children: []
         }
       ]
@@ -152,4 +152,131 @@ const userList = {
   }
 }
 
-export { menuList, logoinSuccess, userList }
+const rightList = {
+  data: [
+    {
+      id: 101,
+      authName: '商品管理',
+      level: '0',
+      pid: 0,
+      path: '/goods'
+    },
+    {
+      id: 102,
+      authName: '订单管理',
+      level: '0',
+      pid: 0,
+      path: '/orders'
+    }
+  ],
+  meta: {
+    msg: '获取权限列表成功',
+    status: 200
+  }
+}
+
+const roleListData = {
+  data: [
+    {
+      id: 30,
+      roleName: '主管',
+      roleDesc: '技术负责人',
+      children: [
+        {
+          id: 101,
+          authName: '商品管理',
+          path: null,
+          children: [
+            {
+              id: 104,
+              authName: '商品列表',
+              path: null,
+              children: [
+                {
+                  id: 105,
+                  authName: '添加商品',
+                  path: null
+                },
+                {
+                  id: 106,
+                  authName: '删除商品',
+                  path: null
+                }
+              ]
+            },
+            {
+              id: 107,
+              authName: '商品列表',
+              path: null,
+              children: [
+                {
+                  id: 109,
+                  authName: '删除商品',
+                  path: null
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+const rightsTree = {
+  data: [
+    {
+      id: 101,
+      authName: '商品管理',
+      path: null,
+      pid: 0,
+      children: [
+        {
+          id: 104,
+          authName: '商品列表',
+          path: null,
+          pid: 101,
+          children: [
+            {
+              id: 105,
+              authName: '添加商品',
+              path: null
+            },
+            {
+              id: 106,
+              authName: '删除商品',
+              path: null
+            }
+          ]
+        },
+        {
+          id: 107,
+          authName: '商品列表',
+          path: null,
+          children: [
+            {
+              id: 108,
+              authName: '添加商品',
+              path: null
+            },
+            {
+              id: 109,
+              authName: '删除商品',
+              path: null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree }
