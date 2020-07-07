@@ -61,7 +61,7 @@ const menuList = {
           id: 2,
           authname: '商品分类',
           order: 3,
-          path: 'goods',
+          path: 'categorys',
           children: []
         }
       ]
@@ -279,4 +279,50 @@ const rightsTree = {
   }
 }
 
-export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree }
+const catListData = {
+  data: {
+    pagenum: 0,
+    pagesize: 5,
+    total: 30,
+    result: [
+      {
+        cat_id: 1,
+        cat_name: '大家电',
+        cat_pid: 0,
+        cat_level: 0,
+        cat_deleted: false,
+        children: [
+          {
+            cat_id: 3,
+            cat_name: '电视',
+            cat_pid: 1,
+            cat_level: 1,
+            cat_deleted: false,
+            children: [
+              {
+                cat_id: 6,
+                cat_name: '曲面电视',
+                cat_pid: 3,
+                cat_level: 2,
+                cat_deleted: false
+              },
+              {
+                cat_id: 7,
+                cat_name: '海信',
+                cat_pid: 3,
+                cat_level: 2,
+                cat_deleted: false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData }
