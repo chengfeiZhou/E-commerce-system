@@ -325,4 +325,50 @@ const catListData = {
   }
 }
 
-export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData }
+const ParentCatListData = {
+  data: {
+    pagenum: 0,
+    pagesize: 5,
+    total: 30,
+    result: [
+      {
+        cat_id: 1,
+        cat_name: '大家电',
+        cat_pid: 0,
+        cat_level: 0,
+        cat_deleted: false,
+        children: [
+          {
+            cat_id: 3,
+            cat_name: '电视',
+            cat_pid: 1,
+            cat_level: 1,
+            cat_deleted: false
+          }
+        ]
+      },
+      {
+        cat_id: 11,
+        cat_name: '大家电2',
+        cat_pid: 10,
+        cat_level: 0,
+        cat_deleted: false,
+        children: [
+          {
+            cat_id: 13,
+            cat_name: '电视2',
+            cat_pid: 10,
+            cat_level: 1,
+            cat_deleted: false
+          }
+        ]
+      }
+    ]
+  },
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData, ParentCatListData }

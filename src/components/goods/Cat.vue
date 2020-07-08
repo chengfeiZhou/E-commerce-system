@@ -10,11 +10,12 @@
     <el-card>
       <el-row>
         <el-col>
-          <el-button type="primary">添加分类</el-button>
+          <el-button type="primary" @click="showAddDialog">添加分类</el-button>
         </el-col>
       </el-row>
       <!-- 表格 -->
       <tree-table
+        class="treeTable"
         :data="catList"
         :columns="TreeColumns"
         :selection-type="false"
@@ -30,22 +31,52 @@
         </template>
         <!-- 排序 -->
         <template slot="order" scope="scope">
-          <el-tag size="mini" v-if="scope.row.cat_level === 0">一级</el-tag>
-          <el-tag type="success" size="mini" v-else-if="scope.row.cat_level === 1">二级</el-tag>
-          <el-tag type="danger" size="mini" v-else>三级</el-tag>
+          <el-tag size="small" v-if="scope.row.cat_level === 0">一级</el-tag>
+          <el-tag type="success" size="small" v-else-if="scope.row.cat_level === 1">二级</el-tag>
+          <el-tag type="danger" size="small" v-else>三级</el-tag>
         </template>
-        <template slot="opt" scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="mini">搜索</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini">搜索</el-button>
+        <template slot="opt">
+          <el-button type="primary" icon="el-icon-edit" size="small">编辑</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="small">删除</el-button>
         </template>
       </tree-table>
       <!-- 分页 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pagenum"
+        :page-sizes="[5, 10, 20, 50]"
+        :page-size="pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </el-card>
+    <el-dialog
+      title="添加分类"
+      :visible.sync="showAddDialogVisible"
+      width="50%">
+      <el-form :model="addCatForm" :rules="addCatFormRules" ref="addCatFormRef" label-width="100px">
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="addCatForm.cat_name"></el-input>
+        </el-form-item>
+        <el-form-item label="父级分类">
+          <el-cascader
+            v-model="selectKeys"
+            :options="ParentCatList"
+            :props="cascaderProps">
+          </el-cascader>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showAddDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="showAddDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { catListData } from '../serverData'
+import { catListData, ParentCatListData } from '../serverData'
 
 export default {
   data () {
@@ -78,14 +109,35 @@ export default {
           type: 'template',
           template: 'opt'
         }
-      ]
+      ],
+      showAddDialogVisible: false,
+      addCatForm: {
+        cat_name: '',
+        cat_pid: 0,
+        cat_level: 0
+      },
+      addCatFormRules: {
+        cat_name: [
+          { required: true, message: '请输入分类名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
+      },
+      selectKeys: [],
+      ParentCatList: [],
+      cascaderProps: {
+        expandTrigger: 'hover',
+        checkStrictly: true,
+        value: 'cat_id',
+        label: 'cat_name',
+        children: 'children'
+      }
     }
   },
   created () {
-    this.getGoodsList()
+    this.getCatsList()
   },
   methods: {
-    getGoodsList () {
+    getCatsList () {
       // const queryInfo = {
       //   type: 3,
       //   pagenum: this.pagenum,
@@ -99,11 +151,41 @@ export default {
       this.pagenum = res.data.pagenum
       this.total = res.data.total
       console.log(this.catList)
+    },
+    handleSizeChange (newSize) {
+      // 监听pagesize改变
+      this.pagesize = newSize
+      this.getCatsList()
+    },
+    handleCurrentChange (newpage) {
+      // 监听pagenum
+      this.pagenum = newpage
+      this.getCatsList()
+    },
+    showAddDialog () {
+      this.getParentCatList()
+      this.showAddDialogVisible = true
+    },
+    getParentCatList () {
+      // 获取父级分类的数据列表
+      // const {data: res} = await this.$http.get('categories', {params: {type: 2}})
+      const res = ParentCatListData
+      if (res.meta.status !== 200) return this.$message.error('获取分类数据失败')
+      this.ParentCatList = res.data.result
+    },
+    parentCatChange () {
+      // 选择项发生变化
+      console.log(this.selectKeys)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+.treeTable {
+  margin: 20px 0;
+}
+.el-cascader {
+  width: 100%;
+}
 </style>
