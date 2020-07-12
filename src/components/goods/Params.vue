@@ -99,8 +99,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        <el-button @click="addDialogClose">取 消</el-button>
+        <el-button type="primary" @click="addParams">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -180,6 +180,20 @@ export default {
     addDialogClose () {
       // 添加对话框的关闭
       this.$refs.addFormRef.resetFields()
+      this.addDialogVisible = false
+    },
+    addParams () {
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return false
+        const { data: res } = await this.$http.post(`categories/${this.catId}/attributes`, {
+          attr_name: this.addForm.attr_name,
+          attr_sel: this.activeTab.name
+        })
+        if (res.meta.status !== 201) return this.$message.error('添加失败')
+        this.addDialogClose()
+        this.getParamsData()
+        return this.$message.success('添加成功')
+      })
     }
   }
 }
