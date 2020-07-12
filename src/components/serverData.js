@@ -54,7 +54,7 @@ const menuList = {
           id: 1,
           authname: '分类参数',
           order: 2,
-          path: 'goods',
+          path: 'params',
           children: []
         },
         {
@@ -371,4 +371,39 @@ const ParentCatListData = {
   }
 }
 
-export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData, ParentCatListData }
+const catePaeams = {
+  only: {
+    data: [
+      {
+        attr_id: 1,
+        attr_name: 'cpu',
+        cat_id: 22,
+        attr_sel: 'only',
+        attr_write: 'manual',
+        attr_vals: 'ffff'
+      }
+    ],
+    meta: {
+      msg: '获取成功',
+      status: 200
+    }
+  },
+  many: {
+    data: [
+      {
+        attr_id: 1,
+        attr_name: 'LED',
+        cat_id: 22,
+        attr_sel: 'many',
+        attr_write: 'manual',
+        attr_vals: 'ffff'
+      }
+    ],
+    meta: {
+      msg: '获取成功',
+      status: 200
+    }
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData, ParentCatListData, catePaeams }

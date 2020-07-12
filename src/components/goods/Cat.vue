@@ -287,7 +287,6 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('删除失败...')
       }
-      // 返回值中包含新的所有权限
       this.getCatsList()
       return this.$message.success('删除成功...')
     }
