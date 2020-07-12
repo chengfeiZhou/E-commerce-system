@@ -52,25 +52,29 @@
       </el-pagination>
     </el-card>
     <el-dialog
-      title="添加分类"
+      :title="dialogMode.title"
       :visible.sync="showAddDialogVisible"
       width="50%">
-      <el-form :model="addCatForm" :rules="addCatFormRules" ref="addCatFormRef" label-width="100px">
-        <el-form-item label="分类名称" prop="cat_name">
-          <el-input v-model="addCatForm.cat_name"></el-input>
-        </el-form-item>
-        <el-form-item label="父级分类">
-          <el-cascader
-            v-model="selectKeys"
-            :options="ParentCatList"
-            :props="cascaderProps">
-          </el-cascader>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="showAddDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="showAddDialogVisible = false">确 定</el-button>
-      </span>
+      <!-- 添加分类 -->
+      <template v-if="dialogMode.mode === 'addCate'">
+        <el-form :model="addCatForm" :rules="addCatFormRules" ref="addCatFormRef"
+          label-width="100px" @close="addCateDialogClose">
+          <el-form-item label="分类名称" prop="cat_name">
+            <el-input v-model="addCatForm.cat_name"></el-input>
+          </el-form-item>
+          <el-form-item label="父级分类">
+            <el-cascader
+              v-model="selectKeys"
+              :options="ParentCatList"
+              :props="cascaderProps">
+            </el-cascader>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="addCateDialogClose">取 消</el-button>
+          <el-button type="primary" @click="addCate">确 定</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -110,6 +114,10 @@ export default {
           template: 'opt'
         }
       ],
+      dialogMode: {
+        mode: '', // dialog类型
+        title: '' // dialog标题
+      },
       showAddDialogVisible: false,
       addCatForm: {
         cat_name: '',
@@ -164,6 +172,10 @@ export default {
     },
     showAddDialog () {
       this.getParentCatList()
+      this.dialogMode = {
+        mode: 'addCate',
+        title: '添加分类'
+      }
       this.showAddDialogVisible = true
     },
     getParentCatList () {
@@ -176,6 +188,37 @@ export default {
     parentCatChange () {
       // 选择项发生变化
       console.log(this.selectKeys)
+      if (this.selectKeys.length > 0) {
+        this.addCatForm.cat_pid = this.selectKeys[this.selectKeys.length - 1]
+        this.addCatForm.cat_level = this.selectKeys.length
+        return true
+      } else {
+        this.addCatForm.cat_pid = 0
+        this.addCatForm.cat_level = 0
+        return true
+      }
+    },
+    addCateDialogClose () {
+      // 关闭
+      this.$refs.addCatFormRef.resetFields()
+      this.addCatForm.cat_pid = 0
+      this.addCatForm.cat_level = 0
+      this.selectKeys = []
+      this.dialogMode = {
+        mode: '',
+        title: ''
+      }
+      this.showAddDialogVisible = false
+    },
+    addCate () {
+      // 点击添加新的分类
+      this.$refs.addCatFormRef.validate(async (valid) => {
+        if (!valid) return false
+        const { data: res } = await this.$http.post('categories', this.addCatForm)
+        if (res.meta.status !== 201) return this.$message.error('添加失')
+        this.addCateDialogClose()
+        return this.$message.success('添加成功')
+      })
     }
   }
 }
