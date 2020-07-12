@@ -288,7 +288,7 @@ export default {
         return this.$message.error('删除失败...')
       }
       // 返回值中包含新的所有权限
-      this.rolesList = res.data
+      this.getCatsList()
       return this.$message.success('删除成功...')
     }
   }
