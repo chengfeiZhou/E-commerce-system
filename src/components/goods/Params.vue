@@ -48,8 +48,8 @@
               label="参数名称">
             </el-table-column>
             <el-table-column label="操作">
-              <template>
-                <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+              <template scope="scope">
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)">编辑</el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -78,8 +78,8 @@
               label="属性名称">
             </el-table-column>
             <el-table-column label="操作">
-              <template>
-                <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
+              <template scope="scope">
+                <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row)">编辑</el-button>
                 <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -101,6 +101,22 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogClose">取 消</el-button>
         <el-button type="primary" @click="addParams">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 修改参数弹窗 -->
+    <el-dialog
+      :title="'修改' + titleText"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClose">
+      <el-form :model="editForm" :rules="editFormrules" ref="editFormRef" label-width="100px">
+        <el-form-item :label="titleText" prop="attr_name">
+          <el-input v-model="editForm.attr_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogClose">取 消</el-button>
+        <el-button type="primary" @click="editParams">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -125,6 +141,14 @@ export default {
       addDialogVisible: false,
       addForm: { attr_name: '' },
       addFormrules: {
+        attr_name: [
+          { required: true, message: '请输入参数名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
+      },
+      editDialogVisible: false,
+      editForm: { attr_name: '' },
+      editFormrules: {
         attr_name: [
           { required: true, message: '请输入参数名称', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
@@ -187,12 +211,38 @@ export default {
         if (!valid) return false
         const { data: res } = await this.$http.post(`categories/${this.catId}/attributes`, {
           attr_name: this.addForm.attr_name,
-          attr_sel: this.activeTab.name
+          attr_sel: this.activeTab
         })
         if (res.meta.status !== 201) return this.$message.error('添加失败')
         this.addDialogClose()
         this.getParamsData()
         return this.$message.success('添加成功')
+      })
+    },
+    async showEditDialog (paramsInfo) {
+      const { data: res } = await this.$http.get(`categories/${this.catId}/attributes/${paramsInfo.attr_id}`, { paramsInfo: { attr_sel: this.activeTab } })
+      if (res.meta.status !== 201) return this.$message.error('添加失败')
+      this.editForm = res.data
+      // 显示编辑对话框
+      this.editDialogVisible = true
+    },
+    editDialogClose () {
+      // 点击关闭
+      this.$refs.editFormRef.resetFields()
+      this.editDialogVisible = false
+    },
+    editParams () {
+      // 点击提交修改
+      this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) return false
+        const { data: res } = await this.$http.put(`categories/${this.catId}/attributes/${this.editForm.attr_id}`, {
+          attr_name: this.editForm.attr_name,
+          attr_sel: this.activeTab
+        })
+        if (res.meta.status !== 200) return this.$message.error('修改失败')
+        this.getParamsData()
+        this.editDialogClose()
+        return this.$message.success('修改成功')
       })
     }
   }
