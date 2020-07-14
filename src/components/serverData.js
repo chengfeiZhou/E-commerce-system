@@ -380,7 +380,7 @@ const catePaeams = {
         cat_id: 22,
         attr_sel: 'only',
         attr_write: 'manual',
-        attr_vals: 'ffff'
+        attr_vals: 'ffff,超线程,小制程'
       }
     ],
     meta: {
@@ -396,7 +396,7 @@ const catePaeams = {
         cat_id: 22,
         attr_sel: 'many',
         attr_write: 'manual',
-        attr_vals: 'ffff'
+        attr_vals: 'ffff,像素,大底'
       }
     ],
     meta: {

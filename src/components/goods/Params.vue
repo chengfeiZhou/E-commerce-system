@@ -34,8 +34,18 @@
             style="width: 100%">
             <!-- 展开行 -->
              <el-table-column type="expand">
-                <!-- <template slot-scope="scope"> -->
-                <template>
+                <template slot-scope="scope">
+                  <el-tag closable v-for="(item, i) in scope.row.attr_vals" :key="i">{{ item }}</el-tag>
+                  <el-input
+                    class="input-new-tag"
+                    v-if="scope.row.inputVisible"
+                    v-model="scope.row.inputValue"
+                    ref="saveTagInput"
+                    size="small"
+                    @keyup.enter.native="handleInputConfirm(scope.row)"
+                    @blur="handleInputConfirm(scope.row)">
+                  </el-input>
+                  <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
                 </template>
              </el-table-column>
             <el-table-column
@@ -64,8 +74,8 @@
             style="width: 100%">
             <!-- 展开行 -->
              <el-table-column type="expand">
-                <!-- <template slot-scope="scope"> -->
-                <template>
+                <template slot-scope="scope">
+                  <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i">{{ item }}</el-tag>
                 </template>
              </el-table-column>
             <el-table-column
@@ -185,6 +195,11 @@ export default {
       // const { data: res } = await this.$http.get(`categories/${this.catId}/attributes`, { params: { sel: this.activeTab } })
       const res = catePaeams[this.activeTab]
       if (res.meta.status !== 200) return this.$message.error('获取参数失败')
+      res.data.forEach(item => {
+        item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
+        item.inputVisible = false // 文本框显示/隐藏
+        item.inputValue = '' // 文本框值
+      })
       if (this.activeTab === 'many') this.manyTableData = res.data
       else if (this.activeTab === 'only') this.onlyTableData = res.data
       console.log(this.manyTableData, this.onlyTableData)
@@ -260,6 +275,28 @@ export default {
       }
       this.getParamsData()
       return this.$message.success('删除成功...')
+    },
+    async handleInputConfirm (row) {
+      // tag文本框事件
+      console.log(row)
+      const inputValue = row.inputValue
+      if (inputValue) {
+        const { data: res } = await this.$http.put(`categories/${this.catId}/attributes/${row.attr_id}`,
+          { attr_name: row.attr_name, attr_sel: row.attr_sel, attr_vals: row.attr_vals.join(',') })
+        if (res.meta.status !== 200) return this.$message.error('提交失败')
+        this.$message.success('提交成功')
+        row.attr_vals.push(inputValue)
+      }
+      row.inputVisible = false
+      row.inputValue = ''
+    },
+    showInput (row) {
+      // 点击按钮, 展示文本框
+      row.inputVisible = true
+      // $nextTick: 页面元素被重新渲染完成后会执行回调
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     }
   }
 }
@@ -268,5 +305,9 @@ export default {
 <style lang="less" scoped>
 .cat_opt {
   margin: 15px 0;
+}
+.input-new-tag {
+  width: 100px;
+  margin-left: 10px;
 }
 </style>
