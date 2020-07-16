@@ -54,14 +54,14 @@ const menuList = {
           id: 1,
           authname: '分类参数',
           order: 2,
-          path: 'goods',
+          path: 'params',
           children: []
         },
         {
           id: 2,
           authname: '商品分类',
           order: 3,
-          path: 'goods',
+          path: 'categorys',
           children: []
         }
       ]
@@ -279,4 +279,131 @@ const rightsTree = {
   }
 }
 
-export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree }
+const catListData = {
+  data: {
+    pagenum: 0,
+    pagesize: 5,
+    total: 30,
+    result: [
+      {
+        cat_id: 1,
+        cat_name: '大家电',
+        cat_pid: 0,
+        cat_level: 0,
+        cat_deleted: false,
+        children: [
+          {
+            cat_id: 3,
+            cat_name: '电视',
+            cat_pid: 1,
+            cat_level: 1,
+            cat_deleted: false,
+            children: [
+              {
+                cat_id: 6,
+                cat_name: '曲面电视',
+                cat_pid: 3,
+                cat_level: 2,
+                cat_deleted: false
+              },
+              {
+                cat_id: 7,
+                cat_name: '海信',
+                cat_pid: 3,
+                cat_level: 2,
+                cat_deleted: false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+const ParentCatListData = {
+  data: {
+    pagenum: 0,
+    pagesize: 5,
+    total: 30,
+    result: [
+      {
+        cat_id: 1,
+        cat_name: '大家电',
+        cat_pid: 0,
+        cat_level: 0,
+        cat_deleted: false,
+        children: [
+          {
+            cat_id: 3,
+            cat_name: '电视',
+            cat_pid: 1,
+            cat_level: 1,
+            cat_deleted: false
+          }
+        ]
+      },
+      {
+        cat_id: 11,
+        cat_name: '大家电2',
+        cat_pid: 10,
+        cat_level: 0,
+        cat_deleted: false,
+        children: [
+          {
+            cat_id: 13,
+            cat_name: '电视2',
+            cat_pid: 10,
+            cat_level: 1,
+            cat_deleted: false
+          }
+        ]
+      }
+    ]
+  },
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+
+const catePaeams = {
+  only: {
+    data: [
+      {
+        attr_id: 1,
+        attr_name: 'cpu',
+        cat_id: 22,
+        attr_sel: 'only',
+        attr_write: 'manual',
+        attr_vals: 'ffff,超线程,小制程'
+      }
+    ],
+    meta: {
+      msg: '获取成功',
+      status: 200
+    }
+  },
+  many: {
+    data: [
+      {
+        attr_id: 1,
+        attr_name: 'LED',
+        cat_id: 22,
+        attr_sel: 'many',
+        attr_write: 'manual',
+        attr_vals: 'ffff,像素,大底'
+      }
+    ],
+    meta: {
+      msg: '获取成功',
+      status: 200
+    }
+  }
+}
+
+export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData, ParentCatListData, catePaeams }
