@@ -172,7 +172,7 @@ export default {
     },
     catId () {
       // 当前选中的分类id
-      return this.selectCateKeys.length === 3 ? null : this.selectCateKeys[this.selectCateKeys.length]
+      return this.selectCateKeys.length < 3 ? null : this.selectCateKeys[this.selectCateKeys.length - 1]
     },
     titleText () {
       if (this.activeTab === 'many') return '动态参数'
@@ -191,6 +191,7 @@ export default {
       this.cateList = res.data.result
     },
     getParamsData () {
+      if (!this.catId) return false
       // 获取对应的参数
       // const { data: res } = await this.$http.get(`categories/${this.catId}/attributes`, { params: { sel: this.activeTab } })
       const res = catePaeams[this.activeTab]
@@ -208,6 +209,9 @@ export default {
       console.log(this.selectCateKeys)
       if (this.selectCateKeys.length < 3) {
         this.selectCateKeys = []
+        // 清空数据
+        this.manyTableData = []
+        this.onlyTableData = []
         return true
       }
       this.getParamsData()
