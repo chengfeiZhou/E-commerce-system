@@ -28,3 +28,6 @@ html, body, #app {
   font-size: 14px;
   line-height: 38px;
 }
+.ql-editor {
+  min-height: 300px;
+}

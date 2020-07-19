@@ -80,6 +80,9 @@ npm install v-viewer
 ```
 vue的图片浏览插件
 
+富文本编辑器:
+安装依赖(运行依赖) => vue-quill-editor
+
 ## 十一、订单管理模块：
 
 

@@ -53,20 +53,21 @@
           </el-tab-pane>
           <el-tab-pane label="商品图片" name="3">
             <!-- TDDO: :auto-upload="false"此处因没有后端,文件不自动上传  -->
-            <el-upload
-              :auto-upload="false"
-              :action= "pictureUpload"
-              :on-remove="pictureRemove"
-              :on-preview="picturePreview"
-              :headers="pictureUploadHeaders"
-              :on-success="pictureSuccess"
-              list-type="picture"
-              :limit="5">
+            <el-upload :action= "pictureUpload" :on-remove="pictureRemove" :on-preview="picturePreview" :headers="pictureUploadHeaders"
+              :on-success="pictureSuccess" list-type="picture" :limit="5" :auto-upload="false">
               <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <quill-editor
+              ref="QuillEditorRef"
+              v-model="addForm.goods_introduce"
+              :options="editorOption">
+            </quill-editor>
+            <!-- 添加商品 -->
+            <el-button type="primary" style="margin-top: 20px;" @click="submitGoods">添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
@@ -87,7 +88,8 @@ export default {
         goods_number: 0,
         goods_cat: [],
         attrs: [],
-        pics: []
+        pics: [],
+        goods_introduce: ''
       },
       addFormrules: {
         goods_name: [
@@ -120,7 +122,8 @@ export default {
       pictureUploadHeaders: {
         // 指定上传请求头
         Authorization: window.sessionStorage.getItem('token')
-      }
+      },
+      editorOption: {}
     }
   },
   created () {
@@ -193,6 +196,18 @@ export default {
       console.log(response)
       this.addForm.pics.push({ pic: response.data.temp_path })
       console.log(this.addForm)
+    },
+    submitGoods () {
+      console.log(this.addForm)
+      this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return this.$message.error('请填写必填的表单项')
+        // 深拷贝addForm
+        const submitForm = JSON.parse(JSON.stringify(this.addForm))
+        submitForm.goods_cat = submitForm.goods_cat.join(',')
+        console.log(submitForm)
+        const { data: res } = await this.$http.post('goods', this.addForm)
+        console.log(res)
+      })
     }
   }
 }
