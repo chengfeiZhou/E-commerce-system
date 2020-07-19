@@ -41,7 +41,7 @@
           </el-tab-pane>
           <el-tab-pane label="商品参数" name="1">
             <el-form-item :label="item.attr_name" prop="attrs" :key="item.attr_id" v-for="(item) in manyTabData">
-              <el-checkbox-group v-model="addForm.attrs" @change="changCheckboxGroup">
+              <el-checkbox-group v-model="item.attr_vals" @change="changCheckboxGroup">
                 <el-checkbox border :label="cb" :key="i" v-for="(cb, i) in item.attr_vals"></el-checkbox>
               </el-checkbox-group>
             </el-form-item>
@@ -204,9 +204,18 @@ export default {
         // 深拷贝addForm
         const submitForm = JSON.parse(JSON.stringify(this.addForm))
         submitForm.goods_cat = submitForm.goods_cat.join(',')
+        // 处理动态参数(many)和静态属性(only)
+        this.manyTabData.forEach(item => {
+          submitForm.attrs.push({ attr_id: item.attr_id, attr_value: item.attr_vals.join(' ') })
+        })
+        this.onlyTabData.forEach(item => {
+          submitForm.attrs.push({ attr_id: item.attr_id, attr_value: item.attr_vals })
+        })
         console.log(submitForm)
-        const { data: res } = await this.$http.post('goods', this.addForm)
-        console.log(res)
+        const { data: res } = await this.$http.post('goods', submitForm)
+        if (res.meta.status !== 200) return this.$message.error('添加商品失败')
+        this.$message.success('添加商品成功')
+        this.$router.push('/goods')
       })
     }
   }
