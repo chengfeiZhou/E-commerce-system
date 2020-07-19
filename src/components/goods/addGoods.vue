@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="hlviewer" v-viewer="{}">
+      <img :src="hlurl" style="display: none;" />
+    </div>
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -48,7 +51,21 @@
               <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
+          <el-tab-pane label="商品图片" name="3">
+            <!-- TDDO: :auto-upload="false"此处因没有后端,文件不自动上传  -->
+            <el-upload
+              :auto-upload="false"
+              :action= "pictureUpload"
+              :on-remove="pictureRemove"
+              :on-preview="picturePreview"
+              :headers="pictureUploadHeaders"
+              :on-success="pictureSuccess"
+              list-type="picture"
+              :limit="5">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
         </el-tabs>
       </el-form>
@@ -69,7 +86,8 @@ export default {
         goods_weight: 0,
         goods_number: 0,
         goods_cat: [],
-        attrs: []
+        attrs: [],
+        pics: []
       },
       addFormrules: {
         goods_name: [
@@ -96,7 +114,13 @@ export default {
         children: 'children'
       },
       manyTabData: [],
-      onlyTabData: []
+      onlyTabData: [],
+      pictureUpload: this.$http.defaults.base + '/upload',
+      hlurl: '',
+      pictureUploadHeaders: {
+        // 指定上传请求头
+        Authorization: window.sessionStorage.getItem('token')
+      }
     }
   },
   created () {
@@ -150,6 +174,25 @@ export default {
     },
     changCheckboxGroup () {
       console.log(this.manyTabData, this.addForm)
+    },
+    pictureRemove (file, fileList) {
+      // 删除图片
+      console.log(file, fileList)
+      const filePath = file.response.temp_path
+      const i = this.addForm.pics.findIndex(x => x.pic === filePath)
+      this.addForm.pics.slice(i, 1) // 删除
+    },
+    picturePreview (file) {
+      // 处理图片预览效果
+      console.log(file)
+      this.hlurl = file.url
+      const viewer = this.$el.querySelector('.hlviewer').$viewer
+      viewer.show()
+    },
+    pictureSuccess (response) {
+      console.log(response)
+      this.addForm.pics.push({ pic: response.data.temp_path })
+      console.log(this.addForm)
     }
   }
 }

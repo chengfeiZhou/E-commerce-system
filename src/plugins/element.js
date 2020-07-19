@@ -36,7 +36,8 @@ import {
   Steps,
   InputNumber,
   CheckboxGroup,
-  Checkbox
+  Checkbox,
+  Upload
 } from 'element-ui'
 Vue.use(Button)
 Vue.use(Form)
@@ -73,6 +74,7 @@ Vue.use(Step)
 Vue.use(InputNumber)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
+Vue.use(Upload)
 // 全局挂载
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

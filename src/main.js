@@ -5,6 +5,9 @@ import './plugins/element.js'
 import axios from 'axios'
 // 导入属性表格
 import ZkTable from 'vue-table-with-tree-grid'
+// v-viewer
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
 
 // 导入全局样式表
 import './assets/css/global.css'
@@ -33,6 +36,7 @@ Vue.filter('dateFormat', (originVal) => {
   const ss = (dt.getSeconds() + '').padStart(2, '0')
   return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
 })
+Vue.use(Viewer)
 
 new Vue({
   router,
