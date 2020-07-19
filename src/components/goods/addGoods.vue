@@ -43,7 +43,11 @@
               </el-checkbox-group>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
+          <el-tab-pane label="商品属性" name="2">
+            <el-form-item :label="item.attr_name" prop="attrs" :key="item.attr_id" v-for="(item) in onlyTabData">
+              <el-input v-model="item.attr_vals"></el-input>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
         </el-tabs>
@@ -91,7 +95,8 @@ export default {
         value: 'cat_id',
         children: 'children'
       },
-      manyTabData: []
+      manyTabData: [],
+      onlyTabData: []
     }
   },
   created () {
@@ -109,7 +114,6 @@ export default {
       const res = catListData
       if (res.meta.status !== 200) return this.$message.error('商品分类获取失败')
       this.catList = res.data.result
-      console.log(this.catList)
     },
     handleChange () {
       // 级联选择器
@@ -117,7 +121,6 @@ export default {
       return true
     },
     beforeTabLeave (activeName, oldActiveName) {
-      console.log(activeName, oldActiveName)
       if (oldActiveName === '0' && this.addForm.goods_cat.length < 3) {
         this.$message.warning('必须选择商品分类')
         return false
@@ -126,7 +129,6 @@ export default {
       }
     },
     tabClicked () {
-      console.log(this.activeIndex, this.addForm)
       if (this.activeIndex === '1') {
         // TODO: 获取商品参数
         // const { data:res } = await this.$http.get(`categories/${this.catId}/attributes`, { params: 'many' })
@@ -137,6 +139,13 @@ export default {
           item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(',')
         })
         this.manyTabData = res.data
+      } else if (this.activeIndex === '2') {
+        // TODO: 获取商品属性
+        // const { data:res } = await this.$http.get(`categories/${this.catId}/attributes`, { params: 'only' })
+        const res = catePaeams.only
+        if (res.meta.status !== 200) return this.$message.error('获取属性失败')
+        console.log(res.data)
+        this.onlyTabData = res.data
       }
     },
     changCheckboxGroup () {
