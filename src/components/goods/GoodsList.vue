@@ -19,7 +19,7 @@
             </el-input>
           </el-col>
           <el-col :span="4">
-            <el-button type="primary">添加商品</el-button>
+            <el-button type="primary" @click="goAddPage">添加商品</el-button>
           </el-col>
         </el-row>
         <el-table
@@ -87,6 +87,9 @@ export default {
       this.goodsList = res.data.goods
       this.total = res.data.total
       // this.queryInfo.pagenum = res.data.pagenum
+    },
+    goAddPage () {
+      this.$router.push('/goods/addGoods')
     }
   }
 }
