@@ -21,3 +21,13 @@ html, body, #app {
 .el-tag {
   margin: 10px;
 }
+.el-steps {
+  margin: 15px 0;
+}
+.el-step__title {
+  font-size: 14px;
+  line-height: 38px;
+}
+.ql-editor {
+  min-height: 300px;
+}

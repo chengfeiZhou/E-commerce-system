@@ -397,6 +397,14 @@ const catePaeams = {
         attr_sel: 'many',
         attr_write: 'manual',
         attr_vals: 'ffff,像素,大底'
+      },
+      {
+        attr_id: 2,
+        attr_name: '板式',
+        cat_id: 22,
+        attr_sel: 'only',
+        attr_write: 'manual',
+        attr_vals: '呵呵,哈哈,小制程'
       }
     ],
     meta: {
@@ -405,5 +413,32 @@ const catePaeams = {
     }
   }
 }
+const goodList = {
+  data: {
+    total: 50,
+    pagenum: 1,
+    goods: [
+      {
+        goods_id: 144,
+        goods_name: 'asfdsd',
+        goods_price: 1,
+        goods_number: 1,
+        goods_weight: 1,
+        goods_state: null,
+        add_time: 1512954923,
+        upd_time: 1512954923,
+        hot_mumber: 0,
+        is_promote: false
+      }
+    ]
+  },
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
 
-export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData, ParentCatListData, catePaeams }
+export {
+  menuList, logoinSuccess, userList, rightList, roleListData,
+  rightsTree, catListData, ParentCatListData, catePaeams, goodList
+}
