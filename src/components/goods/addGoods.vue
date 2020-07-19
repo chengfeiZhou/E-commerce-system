@@ -18,7 +18,7 @@
         <el-step title="完成"></el-step>
       </el-steps>
       <el-form label-position="top" :model="addForm" :rules="addFormrules" ref="addFormRef">
-        <el-tabs tab-position="left" v-model="activeIndex" :before-leave="beforeTabLeave">
+        <el-tabs tab-position="left" v-model="activeIndex" :before-leave="beforeTabLeave" @tab-click="tabClicked">
           <el-tab-pane label="基本信息" name="0">
             <el-form-item label="商品名称" prop="goods_name">
               <el-input v-model="addForm.goods_name" placeholder="请输入商品名称"></el-input>
@@ -33,15 +33,16 @@
               <el-input-number v-model.number="addForm.goods_number" controls-position="right" :min="0"></el-input-number>
             </el-form-item>
             <el-form-item label="商品分类" prop="goods_cat">
-              <el-cascader
-                v-model="addForm.goods_cat"
-                :options="catList"
-                :props="catProps"
-                @change="handleChange">
-              </el-cascader>
+              <el-cascader v-model="addForm.goods_cat" :options="catList" :props="catProps" @change="handleChange"></el-cascader>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
+          <el-tab-pane label="商品参数" name="1">
+            <el-form-item :label="item.attr_name" prop="attrs" :key="item.attr_id" v-for="(item) in manyTabData">
+              <el-checkbox-group v-model="addForm.attrs" @change="changCheckboxGroup">
+                <el-checkbox border :label="cb" :key="i" v-for="(cb, i) in item.attr_vals"></el-checkbox>
+              </el-checkbox-group>
+            </el-form-item>
+          </el-tab-pane>
           <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
           <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
           <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
@@ -52,7 +53,7 @@
 </template>
 
 <script>
-import { catListData } from '../serverData'
+import { catListData, catePaeams } from '../serverData'
 
 export default {
   data () {
@@ -63,7 +64,8 @@ export default {
         goods_price: 0.00,
         goods_weight: 0,
         goods_number: 0,
-        goods_cat: []
+        goods_cat: [],
+        attrs: []
       },
       addFormrules: {
         goods_name: [
@@ -88,12 +90,17 @@ export default {
         label: 'cat_name',
         value: 'cat_id',
         children: 'children'
-      }
-
+      },
+      manyTabData: []
     }
   },
   created () {
     this.getCatList()
+  },
+  computed: {
+    catId () {
+      return this.addForm.goods_cat.length >= 3 ? this.addForm.goods_cat[this.addForm.goods_cat.length - 1] : null
+    }
   },
   methods: {
     getCatList () {
@@ -117,11 +124,30 @@ export default {
       } else {
         return true
       }
+    },
+    tabClicked () {
+      console.log(this.activeIndex, this.addForm)
+      if (this.activeIndex === '1') {
+        // TODO: 获取商品参数
+        // const { data:res } = await this.$http.get(`categories/${this.catId}/attributes`, { params: 'many' })
+        const res = catePaeams.many
+        if (res.meta.status !== 200) return this.$message.error('获取参数失败')
+        console.log(res.data)
+        res.data.forEach(item => {
+          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(',')
+        })
+        this.manyTabData = res.data
+      }
+    },
+    changCheckboxGroup () {
+      console.log(this.manyTabData, this.addForm)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-
+.el-checkbox {
+  margin: 0 10px 5px 0 !important;
+}
 </style>

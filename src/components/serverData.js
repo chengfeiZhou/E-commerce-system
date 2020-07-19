@@ -397,6 +397,14 @@ const catePaeams = {
         attr_sel: 'many',
         attr_write: 'manual',
         attr_vals: 'ffff,像素,大底'
+      },
+      {
+        attr_id: 2,
+        attr_name: '板式',
+        cat_id: 22,
+        attr_sel: 'only',
+        attr_write: 'manual',
+        attr_vals: '呵呵,哈哈,小制程'
       }
     ],
     meta: {
@@ -430,4 +438,7 @@ const goodList = {
   }
 }
 
-export { menuList, logoinSuccess, userList, rightList, roleListData, rightsTree, catListData, ParentCatListData, catePaeams, goodList }
+export {
+  menuList, logoinSuccess, userList, rightList, roleListData,
+  rightsTree, catListData, ParentCatListData, catePaeams, goodList
+}

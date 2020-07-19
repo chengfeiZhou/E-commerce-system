@@ -34,7 +34,9 @@ import {
   TabPane,
   Step,
   Steps,
-  InputNumber
+  InputNumber,
+  CheckboxGroup,
+  Checkbox
 } from 'element-ui'
 Vue.use(Button)
 Vue.use(Form)
@@ -69,6 +71,8 @@ Vue.use(TabPane)
 Vue.use(Steps)
 Vue.use(Step)
 Vue.use(InputNumber)
+Vue.use(CheckboxGroup)
+Vue.use(Checkbox)
 // 全局挂载
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
