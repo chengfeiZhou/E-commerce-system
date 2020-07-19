@@ -12,7 +12,10 @@
           <el-col :span="8">
             <el-input
               placeholder="请输入内容"
-              suffix-icon="el-icon-search">
+              clearable
+              @clear="getGoodsLit"
+              v-model="queryInfo.query">
+              <el-button slot="append" icon="el-icon-search" @click="getGoodsLit"></el-button>
             </el-input>
           </el-col>
           <el-col :span="4">
@@ -28,7 +31,11 @@
           <el-table-column prop="goods_name" label="商品名称"> </el-table-column>
           <el-table-column prop="goods_price" label="商品价格(元)" width="95"> </el-table-column>
           <el-table-column prop="goods_weight" label="商品重量" width="70"> </el-table-column>
-          <el-table-column prop="add_time" label="创建时间" width="140"> </el-table-column>
+          <el-table-column prop="add_time" label="创建时间" width="140">
+            <template slot-scope="scope">
+              {{ scope.row.add_time | dateFormat}}
+            </template>
+          </el-table-column>
           <el-table-column label="操作" width="130">
             <template>
               <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
@@ -36,6 +43,18 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+          @size-change="getGoodsLit"
+          @current-change="getGoodsLit"
+          @prev-click="getGoodsLit"
+          @next-click="getGoodsLit"
+          background
+          :current-page="queryInfo.pagenum"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="queryInfo.pagesize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </el-card>
     </div>
 </template>
