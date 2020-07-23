@@ -438,7 +438,117 @@ const goodList = {
   }
 }
 
+const orderlist = {
+  data: {
+    total: 1,
+    pagenum: 1,
+    goods: [
+      {
+        order_id: 47,
+        user_id: 133,
+        order_number: 'itcast-59e7502d7993d',
+        order_price: 322,
+        order_pay: 1,
+        is_send: '是',
+        trade_no: '',
+        order_fapiao_title: '个人',
+        order_fapiao_company: '',
+        order_fapiao_content: '办公用品',
+        consignee_addr: 'a:7:{s:6:\\"cgn_id\\";i:1;s:7:\\"user_id\\";i:133;s:8:\\"cgn_name\\";s:9:\\"王二柱\\";s:11:\\"cgn_address\\";s:51:\\"北京市海淀区苏州街长远天地大厦305室\\";s:7:\\"cgn_tel\\";s:11:\\"13566771298\\;s:8:\\"cgn_code\\";s:6:\\"306810\\";s:11:\\"delete_time\\";N;}',
+        pay_status: 1,
+        create_time: 1508331565,
+        update_time: 1508331565
+      },
+      {
+        order_id: 48,
+        user_id: 133,
+        order_number: 'itcast-59e7502d7993d',
+        order_price: 32,
+        order_pay: 0,
+        is_send: '否',
+        trade_no: '',
+        order_fapiao_title: '个人',
+        order_fapiao_company: '',
+        order_fapiao_content: '办公用品',
+        consignee_addr: 'a:7:{s:6:\\"cgn_id\\";i:1;s:7:\\"user_id\\";i:133;s:8:\\"cgn_name\\";s:9:\\"王二柱\\";s:11:\\"cgn_address\\";s:51:\\"北京市海淀区苏州街长远天地大厦305室\\";s:7:\\"cgn_tel\\";s:11:\\"13566771298\\;s:8:\\"cgn_code\\";s:6:\\"306810\\";s:11:\\"delete_time\\";N;}',
+        pay_status: 0,
+        create_time: 1508331565,
+        update_time: 1508331565
+      }
+    ]
+  },
+  meta: {
+    msg: '获取成功',
+    status: 200
+  }
+}
+const kuaidi = {
+  data: [
+    {
+      time: '2018-05-10 09:39:00',
+      ftime: '2018-05-10 09:39:00',
+      context: '已签收,感谢使用顺丰,期待再次为您服务',
+      location: ''
+    },
+    {
+      time: '2018-05-10 08:23:00',
+      ftime: '2018-05-10 08:23:00',
+      context: '[北京市]北京海淀育新小区营业点派件员 顺丰速运 95338正在为您派件',
+      location: ''
+    },
+    {
+      time: '2018-05-10 07:32:00',
+      ftime: '2018-05-10 07:32:00',
+      context: '快件到达 [北京海淀育新小区营业点]',
+      location: ''
+    },
+    {
+      time: '2018-05-10 02:03:00',
+      ftime: '2018-05-10 02:03:00',
+      context: '快件在[北京顺义集散中心]已装车,准备发往 [北京海淀育新小区营业点]',
+      location: ''
+    },
+    {
+      time: '2018-05-09 23:05:00',
+      ftime: '2018-05-09 23:05:00',
+      context: '快件到达 [北京顺义集散中心]',
+      location: ''
+    },
+    {
+      time: '2018-05-09 21:21:00',
+      ftime: '2018-05-09 21:21:00',
+      context: '快件在[北京宝胜营业点]已装车,准备发往 [北京顺义集散中心]',
+      location: ''
+    },
+    {
+      time: '2018-05-09 13:07:00',
+      ftime: '2018-05-09 13:07:00',
+      context: '顺丰速运 已收取快件',
+      location: ''
+    },
+    {
+      time: '2018-05-09 12:25:03',
+      ftime: '2018-05-09 12:25:03',
+      context: '卖家发货',
+      location: ''
+    },
+    {
+      time: '2018-05-09 12:22:24',
+      ftime: '2018-05-09 12:22:24',
+      context: '您的订单将由HLA（北京海淀区清河中街店）门店安排发货。',
+      location: ''
+    },
+    {
+      time: '2018-05-08 21:36:04',
+      ftime: '2018-05-08 21:36:04',
+      context: '商品已经下单',
+      location: ''
+    }
+  ],
+  meta: { status: 200, message: '获取物流信息成功！' }
+}
 export {
   menuList, logoinSuccess, userList, rightList, roleListData,
-  rightsTree, catListData, ParentCatListData, catePaeams, goodList
+  rightsTree, catListData, ParentCatListData, catePaeams, goodList,
+  orderlist, kuaidi
 }
