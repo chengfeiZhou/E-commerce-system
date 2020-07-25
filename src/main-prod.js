@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import './plugins/element.js'
+// import './plugins/element.js'
 import axios from 'axios'
 // 导入属性表格
 import ZkTable from 'vue-table-with-tree-grid'
@@ -11,17 +11,12 @@ import Viewer from 'v-viewer'
 // 富文本编辑器 vue-quill-editor
 import VueQuillEditor from 'vue-quill-editor'
 
-import 'quill/dist/quill.core.css' // import styles
-import 'quill/dist/quill.snow.css' // for snow theme
-import 'quill/dist/quill.bubble.css' // for bubble theme
-
 // 导入全局样式表
 import './assets/css/global.css'
 // 导入字体图标
 import './assets/fonts/iconfont.css'
 // 导入nprogress
 import NPrpgress from 'nprogress'
-import 'nprogress/nprogress.css'
 
 // 设置axios请求拦截器
 axios.defaults.base = 'http://127.0.0.1:8888/api'

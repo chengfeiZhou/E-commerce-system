@@ -222,3 +222,81 @@ module.exports = {
   }
 }
 ```
+
+## 7. 通过externals加载外部CDN资源:
+默认情况下, 通过import语法导入的第三方依赖资源,最终会被打包到同一个文件中, 从而导致打包成功后的单文件体积的问题;
+可以通过webpack的externals节点, 来配置并加载外部的CDN资源. 凡是声明在externals中的第三方依赖包, 都不会被打包;
+### a. 修改vue.config.js:
+代码示例:
+```js
+// ./vue.config.js
+module.exports = {
+  chainWebpack: config => {
+    // 发布模式
+    config.when(process.env.NODE_ENV === 'production', config => {
+      ...
+      config.set('externals', {
+        vue: 'vue',
+        'vue-router': 'VueRouter',
+        axios: 'axios',
+        lodash: '_',
+        echarts: 'echarts',
+        nprogress: 'NProgress',
+        'vue-quill-editor': 'VueQuillEditor'
+      })
+    })
+    config.when(process.env.NODE_ENV === 'development', config => {
+      // 开发模式
+      ...
+    })
+  }
+}
+```
+### b.在./pubilc/index.html文字间头部,添加CDN资源引用:
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+    <!-- 富文本编辑器 的样式表文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/quill/1.3.4/quill.core.min.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/quill/1.3.4/quill.snow.min.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/quill/1.3.4/quill.bubble.min.css" />
+
+    <script src="https://cdn.staticfile.org/vue/2.5.22/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue-router/3.0.1/vue-router.min.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdn.staticfile.org/lodash.js/4.17.11/lodash.min.js"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.1.0/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js"></script>
+    <!-- 富文本编辑器的 js 文件 -->
+    <script src="https://cdn.staticfile.org/quill/1.3.4/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.4/dist/vue-quill-editor.js"></script>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+
+```
+### c. CDN引用element-ui:
+- 在```main-prod.js```中注释掉element-ui按需加载的代码;
+- 在```index.html```的头部区域, 通过CDN加载element-ui的js和css样式
+```html
+<!-- ./build/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+  <!-- element-ui 的 js 文件 -->
+  <script src="https://cdn.staticfile.org/element-ui/2.8.2/index.js"></script>
+  <!-- element-ui 的样式表文件 -->
+  <link rel="stylesheet" href="https://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css" />
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
