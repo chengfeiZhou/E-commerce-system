@@ -416,3 +416,15 @@ const compression = require('compression')
 // 开启中间件, 在托管静态资源之前
 app.use(compression())
 ```
+
+## 2. 开启https:
+
+## 3. 使用pm2管理应用:
+- 安装pm2: ```npm install pm2 -g```
+- 启动项目: ```pm2 start 脚本 --name 自定义名称```
+- 查看运行项目: ```pm2 ls```
+- 重启项目: ```pm2 restart 自定义名称```
+- 停止项目: ```pm2 stop 自定义名称```
+- 删除项目: ```pm2 delete 自定义名称```
+
+![](./images/pm2.png)
