@@ -31,3 +31,6 @@ html, body, #app {
 .ql-editor {
   min-height: 300px;
 }
+.el-scrollbar__wrap{
+  height: 360px ;
+}
