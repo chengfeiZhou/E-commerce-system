@@ -74,7 +74,6 @@
     </el-dialog>
   </div>
 </template>
-: 视频===07
 
 <script>
 import { orderlist, kuaidi } from '../serverData'
