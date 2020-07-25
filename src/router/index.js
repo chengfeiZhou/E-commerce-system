@@ -1,17 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '../components/Login.vue'
-import Home from '../components/Home'
-import Welcome from '../components/Welcome'
-import User from '../components/user/Users'
-import Rights from '../components/power/Rights'
-import Roles from '../components/power/Roles'
-import Cat from '../components/goods/Cat'
-import Params from '../components/goods/Params'
-import GoodsList from '../components/goods/GoodsList'
-import addGoods from '../components/goods/addGoods'
-import Order from '../components/order/Orders'
-import Report from '../components/report/report'
+
+const Login = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Login.vue')
+const Home = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Home.vue')
+const Welcome = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Welcome.vue')
+
+const User = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/user/Users.vue')
+const Rights = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/power/Rights.vue')
+const Roles = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/power/Roles.vue')
+const Cat = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/goods/Cat.vue')
+
+const Params = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/Params.vue')
+const GoodsList = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/GoodsList.vue')
+const addGoods = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/addGoods.vue')
+
+const Order = () => import(/* webpackChunkName: "order_report" */ '../components/order/Orders.vue')
+const Report = () => import(/* webpackChunkName: "order_report" */ '../components/report/report.vue')
 
 Vue.use(VueRouter)
 

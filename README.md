@@ -345,3 +345,44 @@ module.exports = {
   </body>
 </html>
 ```
+
+## 9. 路由懒加载:
+官方文档: [https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97](https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97)
+- 安装```@babel/plugin-syntax-dynamic-import```包;
+- 在```babel.config.js```配置文件中声明该插件;
+```js
+,,,
+module.exports = {
+  ,,, 
+  plugins: [
+    ,,,
+    // 增加节点, 展开节点
+    ...prodPlugins,
+    // 路由懒加载插件
+    '@babel/plugin-syntax-dynamic-import'
+  ]
+}
+```
+- 将路由改为按需加载的形式, 示例如下:
+```js
+// ./src/router/index.js
+...
+const Login = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Login.vue')
+const Home = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Home.vue')
+const Welcome = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Welcome.vue')
+
+const User = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/user/Users.vue')
+const Rights = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/power/Rights.vue')
+const Roles = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/power/Roles.vue')
+const Cat = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/goods/Cat.vue')
+
+const Params = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/Params.vue')
+const GoodsList = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/GoodsList.vue')
+const addGoods = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/addGoods.vue')
+
+const Order = () => import(/* webpackChunkName: "order_report" */ '../components/order/Orders.vue')
+const Report = () => import(/* webpackChunkName: "order_report" */ '../components/report/report.vue')
+
+Vue.use(VueRouter)
+...
+```

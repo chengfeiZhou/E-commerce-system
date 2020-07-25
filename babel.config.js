@@ -17,6 +17,8 @@ module.exports = {
       }
     ],
     // 增加节点, 展开节点
-    ...prodPlugins
+    ...prodPlugins,
+    // 路由懒加载插件
+    '@babel/plugin-syntax-dynamic-import'
   ]
 }
