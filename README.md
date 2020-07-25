@@ -300,3 +300,48 @@ module.exports = {
   </body>
 </html>
 ```
+
+## 8. 首页内容定制化:
+不同的打包环境下, 首页内容可能会有所不同, 可以通过插件的方式进行定制, 插件配置如下:
+```js
+// ./vue.config.js
+module.exports = {
+  chainWebpack: config => {
+    // 发布模式
+    config.when(process.env.NODE_ENV === 'production', config => {
+      config.plugin('html').tap(args => {
+        args[0].isProd = true
+        return args
+      })
+      ...
+    })
+    config.when(process.env.NODE_ENV === 'development', config => {
+      // 开发模式
+      config.plugin('html').tap(args => {
+        args[0].isProd = false
+        return args
+      })
+      ...
+    })
+  }
+}
+```
+在index.html中通过参数:
+```html
+<!-- ./pubilc/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+    <title><%= htmlWebpackPlugin.options.isProd ? '' : 'dev - ' %>电商后台管理系统</title>
+
+    <% if(htmlWebpackPlugin.options.isProd){ %>
+      <link rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+      ...
+    <% } %>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
