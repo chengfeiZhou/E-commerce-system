@@ -404,3 +404,15 @@ app.listen(80, () => {
   console.log('server running at http://127.0.0.1')
 })
 ```
+## 2. 开启gzip压缩:
+可以通过服务器端使用Express做gzip压缩, 配置如下:
+```js
+// 安装相应的包
+npm install compression -D
+
+// 导入包
+const compression = require('compression')
+
+// 开启中间件, 在托管静态资源之前
+app.use(compression())
+```
