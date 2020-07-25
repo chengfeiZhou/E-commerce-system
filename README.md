@@ -88,3 +88,89 @@ vue的图片浏览插件
 
 ## 十二、数据统计模块：
 使用```echarts```实现数据报表功能
+
+# 十三、项目优化上线：
+## 1. 能够优化Vue项目：
+### 1.1 项目优化策略:
+- 生成打包报告;
+- 第三方库的CDN加载;
+- Element-UI组件按序加载;
+- 路由懒加载;
+- 首页内容定制;
+
+### 1.2 添加页面进度条:
+使用第三方插件```nprogress```
+github: [https://github.com/rstacruz/nprogress](https://github.com/rstacruz/nprogress)
+
+#### a. 安装:
+vue-cli中```依赖 -> 运行依赖```搜索```nprogress```安装即可;
+#### b. 使用:
+
+简单的调用```start```和```done()```来控制进度条
+```js
+import NProgress from 'nprogress'
+
+NProgress.start();
+NProgress.done();
+```
+在本项目中, 用过在ajax拦截器中使用调用```start```和```done()```:
+```js
+./main.js
+
+...
+// 导入nprogress
+import NPrpgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+axios.defaults.base = 'http://127.0.0.1:8888/api'
+// 在request拦截器中展示进度条
+axios.interceptors.request.use(config => {
+  ...
+  NPrpgress.start()
+  return config
+})
+// 在response中隐藏进度条
+axios.interceptors.response.use(config => {
+  NPrpgress.done()
+  return config
+})
+Vue.prototype.$http = axios
+Vue.config.productionTip = false
+
+...
+```
+### 1.3 解决开发打包运行中的```警告```:
+![](./images/deal_with_warring.png)
+
+### 1.4 解决生产打包过程中的```警告```:
+![](./image/deal_with_build_warring.png)
+#### a.使用```babel-plugin-transform-remove-console```解决生产打包不允许代码出现console.log:
+- 使用```babel-plugin-transform-remove-console```
+[https://www.npmjs.com/package/babel-plugin-transform-remove-console](https://www.npmjs.com/package/babel-plugin-transform-remove-console)
+- 安装:
+在```vue-cli```中, ```依赖 -> 开发依赖```, 搜索```babel-plugin-transform-remove-console```并安装;
+- 使用:
+
+```js
+./babel.config.js
+module.exports = {
+  presets: [
+    '@vue/cli-plugin-babel/preset'
+  ],
+  plugins: [
+    [
+      'component',
+      {
+        libraryName: 'element-ui',
+        styleLibraryName: 'theme-chalk'
+      }
+    ],
+    // 增加节点
+    'transform-remove-console'
+  ]
+}
+```
+
+
+
+## 2. 能够部署Vue项目:
