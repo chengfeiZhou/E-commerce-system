@@ -89,7 +89,7 @@ const menuList = {
       children: [
         {
           id: 0,
-          authname: '用户管理',
+          authname: '数据报表',
           order: 1,
           path: 'reports',
           children: []
@@ -547,8 +547,61 @@ const kuaidi = {
   ],
   meta: { status: 200, message: '获取物流信息成功！' }
 }
+
+const reportData = {
+  data: {
+    legend: {
+      data: ['华东', '华南', '华北', '西部', '其他']
+    },
+    xAxis: [
+      {
+        data: ['2019-12-27', '2019-12-28', '2019-12-29', '2019-12-30', '2019-12-30', '2020-01-01']
+      }
+    ],
+    series: [
+      {
+        name: '华东',
+        data: [300, 500, 600, 300, 400, 750],
+        type: 'line',
+        stack: '总量',
+        areaStyle: {}
+      },
+      {
+        name: '华南',
+        data: [820, 780, 800, 1000, 1050, 1500],
+        type: 'line',
+        stack: '总量',
+        areaStyle: {}
+      },
+      {
+        name: '华北',
+        data: [1500, 1000, 1500, 2200, 2500, 2800],
+        type: 'line',
+        stack: '总量',
+        areaStyle: {}
+      },
+      {
+        name: '西部',
+        data: [2500, 1800, 2300, 3500, 3700, 4050],
+        type: 'line',
+        stack: '总量',
+        areaStyle: {}
+      },
+      {
+        name: '其他',
+        data: [4000, 2000, 3400, 5000, 5300, 5500],
+        type: 'line',
+        stack: '总量',
+        areaStyle: {}
+      }
+    ]
+
+  },
+  meta: { status: 200, message: '获取成功！' }
+}
+
 export {
   menuList, logoinSuccess, userList, rightList, roleListData,
   rightsTree, catListData, ParentCatListData, catePaeams, goodList,
-  orderlist, kuaidi
+  orderlist, kuaidi, reportData
 }
