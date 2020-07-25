@@ -386,3 +386,21 @@ const Report = () => import(/* webpackChunkName: "order_report" */ '../component
 Vue.use(VueRouter)
 ...
 ```
+
+# 十四、项目上线的相关配置：
+## 1. 通过node创建web服务器：
+创建node项目， 并安装express， 通过express快速创建web服务器， 将vue打包生成的dist文件夹， 托管为静态资源：
+- 新建一个目录(./node-server), 并初始化node项目(```npm init -y```)
+- 安装express, 命令行执行```npm install express```;
+- 创建启动文件./app.js
+```js
+const express = require('express')
+const app = express()
+
+// 指定静态资源目录
+app.use(express.static('../dist'))
+
+app.listen(80, () => {
+  console.log('server running at http://127.0.0.1')
+})
+```
