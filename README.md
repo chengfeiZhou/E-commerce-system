@@ -88,3 +88,343 @@ vue的图片浏览插件
 
 ## 十二、数据统计模块：
 使用```echarts```实现数据报表功能
+
+# 十三、项目优化上线：
+## 1. 项目优化策略:
+- 生成打包报告;
+- 第三方库的CDN加载;
+- Element-UI组件按序加载;
+- 路由懒加载;
+- 首页内容定制;
+
+## 2 添加页面进度条:
+使用第三方插件```nprogress```
+github: [https://github.com/rstacruz/nprogress](https://github.com/rstacruz/nprogress)
+
+### 2.1 安装:
+vue-cli中```依赖 -> 运行依赖```搜索```nprogress```安装即可;
+### 2.2 使用:
+
+简单的调用```start```和```done()```来控制进度条
+```js
+import NProgress from 'nprogress'
+
+NProgress.start();
+NProgress.done();
+```
+在本项目中, 用过在ajax拦截器中使用调用```start```和```done()```:
+```js
+./main.js
+
+...
+// 导入nprogress
+import NPrpgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+axios.defaults.base = 'http://127.0.0.1:8888/api'
+// 在request拦截器中展示进度条
+axios.interceptors.request.use(config => {
+  ...
+  NPrpgress.start()
+  return config
+})
+// 在response中隐藏进度条
+axios.interceptors.response.use(config => {
+  NPrpgress.done()
+  return config
+})
+Vue.prototype.$http = axios
+Vue.config.productionTip = false
+
+...
+```
+## 3. 解决开发打包运行中的```警告```:
+![](./images/deal_with_warring.png)
+
+## 4. 解决生产打包过程中的```警告```:
+![](./image/deal_with_build_warring.png)
+### 4.1 使用```babel-plugin-transform-remove-console```解决生产打包不允许代码出现console.log:
+[https://www.npmjs.com/package/babel-plugin-transform-remove-console](https://www.npmjs.com/package/babel-plugin-transform-remove-console)
+#### a. 安装:
+在```vue-cli```中, ```依赖 -> 开发依赖```, 搜索```babel-plugin-transform-remove-console```并安装;
+#### b. 使用:
+
+```js
+./babel.config.js
+// 项目发布阶段需要用到的babel插件
+const prodPlugins = []
+if (process.env.NODE_ENV === 'production') {
+  // 发布模式
+  prodPlugins.push('transform-remove-console')
+}
+module.exports = {
+  presets: [
+    ,,,
+  ],
+  plugins: [
+    [
+      ,,,
+    ],
+    // 增加节点, 展开节点
+    ...prodPlugins
+  ]
+}
+```
+
+## 5. 生成打包报告:
+打包时, 为了直观地发现项目中存在的问题, 可以在打包时生成报告, 生成报告的方式有两种:
+- 通过命令行参数的形式生成报告:
+```
+//report 选项可以生成report.html以帮助分析内容
+vue-cli-service build --report
+```
+- 通过可视化的UI面板直接查看报告:
+在可视化面板最后那个, 通过```控制台```和```分析```面板,可以查看
+![](./images/build_fenxi.png)
+
+
+## 6. 通过vue.config.js修改webpack的默认配置:
+通过vue-cli 3.0工具生成的项目, 默认隐藏了所有的webpack的配置项, 目的是为了屏蔽项目的配置过程, 让程序员把工作重心, 放到具体功能和业务上来.
+
+如果程序员有修改webpack默认配置的需求, 可以在项目根目录中, 按需创建```webpack.config.js```这个配置文件, 从而对项目的打包发布过程做自定义的配置(具体配置参考:[https://cli.vuejs.org/zh/config/#vue-config-js](https://cli.vuejs.org/zh/config/#vue-config-js))
+```js
+// ./webpack.config.js
+
+// 这个文件中, 应该导出一个含有自定义配置项的对象
+module.export = {
+  // 选项
+}
+```
+## 6. 为开发模式与发布模式指定不同的打包入口
+默认情况下, vue项目的```开发模式```与```发布模式```公用同一个打包入口(即./src/main.js). 为了将项目的开发过程与发布过程分离, 可以分为两种模式, 各自指定打包的入口文件, 即:
+- 开发模式入口: ```./src/main-dev.js```;
+- 发布模式入口: ```./src/main-prod.js```;
+
+### 6.1 configureWebpack 和 chainWebpack:
+在vue.config.js导出的配置对象, 新增configureWebpack 或 chainWebpack节点, 来自定义webpack的打包配置;
+configureWebpack 和 chainWebpack的作用相同, 唯一的区别在于修改webpack配置的方式不同:
+- configureWebpack: 通过```操作对象```的方式来修改默认的webpack配置;
+- chainWebpack: 通过```连式编程```的方式来修改默认的webpack配置;
+
+### 6.2 通过chainWebpack自定义打包入口:
+代码实例:
+```js
+// ./vue.config.js
+
+module.exports = {
+  chainWebpack: config => {
+    config.when(process.env.NODE_ENV === 'production', config => {
+      config.entry('app').clear().add('./src/main-prod.js')
+    })
+    config.when(process.env.NODE_ENV === 'development', config => {
+      config.entry('app').clear().add('./src/main-dev.js')
+    })
+  }
+}
+```
+
+## 7. 通过externals加载外部CDN资源:
+默认情况下, 通过import语法导入的第三方依赖资源,最终会被打包到同一个文件中, 从而导致打包成功后的单文件体积的问题;
+可以通过webpack的externals节点, 来配置并加载外部的CDN资源. 凡是声明在externals中的第三方依赖包, 都不会被打包;
+### a. 修改vue.config.js:
+代码示例:
+```js
+// ./vue.config.js
+module.exports = {
+  chainWebpack: config => {
+    // 发布模式
+    config.when(process.env.NODE_ENV === 'production', config => {
+      ...
+      config.set('externals', {
+        vue: 'vue',
+        'vue-router': 'VueRouter',
+        axios: 'axios',
+        lodash: '_',
+        echarts: 'echarts',
+        nprogress: 'NProgress',
+        'vue-quill-editor': 'VueQuillEditor'
+      })
+    })
+    config.when(process.env.NODE_ENV === 'development', config => {
+      // 开发模式
+      ...
+    })
+  }
+}
+```
+### b.在./pubilc/index.html文字间头部,添加CDN资源引用:
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+    <!-- 富文本编辑器 的样式表文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/quill/1.3.4/quill.core.min.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/quill/1.3.4/quill.snow.min.css" />
+    <link rel="stylesheet" href="https://cdn.staticfile.org/quill/1.3.4/quill.bubble.min.css" />
+
+    <script src="https://cdn.staticfile.org/vue/2.5.22/vue.min.js"></script>
+    <script src="https://cdn.staticfile.org/vue-router/3.0.1/vue-router.min.js"></script>
+    <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdn.staticfile.org/lodash.js/4.17.11/lodash.min.js"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.1.0/echarts.min.js"></script>
+    <script src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js"></script>
+    <!-- 富文本编辑器的 js 文件 -->
+    <script src="https://cdn.staticfile.org/quill/1.3.4/quill.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-quill-editor@3.0.4/dist/vue-quill-editor.js"></script>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+
+```
+### c. CDN引用element-ui:
+- 在```main-prod.js```中注释掉element-ui按需加载的代码;
+- 在```index.html```的头部区域, 通过CDN加载element-ui的js和css样式
+```html
+<!-- ./build/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+  <!-- element-ui 的 js 文件 -->
+  <script src="https://cdn.staticfile.org/element-ui/2.8.2/index.js"></script>
+  <!-- element-ui 的样式表文件 -->
+  <link rel="stylesheet" href="https://cdn.staticfile.org/element-ui/2.8.2/theme-chalk/index.css" />
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+## 8. 首页内容定制化:
+不同的打包环境下, 首页内容可能会有所不同, 可以通过插件的方式进行定制, 插件配置如下:
+```js
+// ./vue.config.js
+module.exports = {
+  chainWebpack: config => {
+    // 发布模式
+    config.when(process.env.NODE_ENV === 'production', config => {
+      config.plugin('html').tap(args => {
+        args[0].isProd = true
+        return args
+      })
+      ...
+    })
+    config.when(process.env.NODE_ENV === 'development', config => {
+      // 开发模式
+      config.plugin('html').tap(args => {
+        args[0].isProd = false
+        return args
+      })
+      ...
+    })
+  }
+}
+```
+在index.html中通过参数:
+```html
+<!-- ./pubilc/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ...
+    <title><%= htmlWebpackPlugin.options.isProd ? '' : 'dev - ' %>电商后台管理系统</title>
+
+    <% if(htmlWebpackPlugin.options.isProd){ %>
+      <link rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+      ...
+    <% } %>
+  </head>
+  <body>
+    ...
+  </body>
+</html>
+```
+
+## 9. 路由懒加载:
+官方文档: [https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97](https://router.vuejs.org/zh/guide/advanced/lazy-loading.html#%E6%8A%8A%E7%BB%84%E4%BB%B6%E6%8C%89%E7%BB%84%E5%88%86%E5%9D%97)
+- 安装```@babel/plugin-syntax-dynamic-import```包;
+- 在```babel.config.js```配置文件中声明该插件;
+```js
+,,,
+module.exports = {
+  ,,, 
+  plugins: [
+    ,,,
+    // 增加节点, 展开节点
+    ...prodPlugins,
+    // 路由懒加载插件
+    '@babel/plugin-syntax-dynamic-import'
+  ]
+}
+```
+- 将路由改为按需加载的形式, 示例如下:
+```js
+// ./src/router/index.js
+...
+const Login = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Login.vue')
+const Home = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Home.vue')
+const Welcome = () => import(/* webpackChunkName: "login_home_welcome" */ '../components/Welcome.vue')
+
+const User = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/user/Users.vue')
+const Rights = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/power/Rights.vue')
+const Roles = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/power/Roles.vue')
+const Cat = () => import(/* webpackChunkName: "user_roghts_roles_cat" */ '../components/goods/Cat.vue')
+
+const Params = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/Params.vue')
+const GoodsList = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/GoodsList.vue')
+const addGoods = () => import(/* webpackChunkName: "params_goodslist_addgoods" */ '../components/goods/addGoods.vue')
+
+const Order = () => import(/* webpackChunkName: "order_report" */ '../components/order/Orders.vue')
+const Report = () => import(/* webpackChunkName: "order_report" */ '../components/report/report.vue')
+
+Vue.use(VueRouter)
+...
+```
+
+# 十四、项目上线的相关配置：
+## 1. 通过node创建web服务器：
+创建node项目， 并安装express， 通过express快速创建web服务器， 将vue打包生成的dist文件夹， 托管为静态资源：
+- 新建一个目录(./node-server), 并初始化node项目(```npm init -y```)
+- 安装express, 命令行执行```npm install express```;
+- 创建启动文件./app.js
+```js
+const express = require('express')
+const app = express()
+
+// 指定静态资源目录
+app.use(express.static('../dist'))
+
+app.listen(80, () => {
+  console.log('server running at http://127.0.0.1')
+})
+```
+## 2. 开启gzip压缩:
+可以通过服务器端使用Express做gzip压缩, 配置如下:
+```js
+// 安装相应的包
+npm install compression -D
+
+// 导入包
+const compression = require('compression')
+
+// 开启中间件, 在托管静态资源之前
+app.use(compression())
+```
+
+## 2. 开启https:
+
+## 3. 使用pm2管理应用:
+- 安装pm2: ```npm install pm2 -g```
+- 启动项目: ```pm2 start 脚本 --name 自定义名称```
+- 查看运行项目: ```pm2 ls```
+- 重启项目: ```pm2 restart 自定义名称```
+- 停止项目: ```pm2 stop 自定义名称```
+- 删除项目: ```pm2 delete 自定义名称```
+
+![](./images/pm2.png)
